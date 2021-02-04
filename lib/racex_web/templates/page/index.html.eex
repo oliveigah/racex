@@ -4,11 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" /><title>Racex</title>
-
   </head>
   <body>
-    <canvas style="position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; margin: auto; border:2px solid black" id="canvas" width="1000" height="800"></canvas>
-      <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>">
-      </script>
+      <h2 class="section-heading">Browser Race Game</h2>
+      <p> This is a personal project to learn some concepts about Elixir, Phoenix and Game Servers</p>
   </body>
 </html>

@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <div class="d-flex justify-content-center align-items-center">
+          <h1> LOGIN </h1>
+        </div>
+      <%= form_for @conn, Routes.session_path(@conn, :create), [as: :session], fn f -> %>
+      <div class="control-group">
+        <div class="form-group floating-label-form-group controls">
+          <%= text_input f, :username, placeholder: "Username", class: "form-control" %>
+        </div>
+      </div>
+
+        <div class="control-group">
+          <div class="form-group floating-label-form-group controls">
+            <%= password_input f, :password, placeholder: "Password", class: "form-control" %>
+          </div>
+        </div>
+
+       <br>
+       <div class="d-flex justify-content-center align-items-center">
+          <%= submit "Login", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+</div>

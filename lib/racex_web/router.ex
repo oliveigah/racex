@@ -7,6 +7,7 @@ defmodule RacexWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug RacexWeb.Auth
   end
 
   pipeline :api do
@@ -17,6 +18,15 @@ defmodule RacexWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+
+    get "/users/new", UserController, :new
+    get "/sessions/new", SessionController, :new
+    get "/games/new", GameController, :new
+
+    post "/users", UserController, :create
+    post "/sessions", SessionController, :create
+
+    delete "/sessions", SessionController, :delete
   end
 
   # Other scopes may use custom stacks.
