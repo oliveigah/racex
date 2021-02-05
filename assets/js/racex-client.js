@@ -1,6 +1,12 @@
-import {generateServerSetupResponse} from './test-server'
+import {generateServerSetupResponse, generateServerUpdateResponse} from './test-server'
 
-var canvas, ctx, gridXSize, gridYSize;
+var canvas, ctx, gridXSize, gridYSize
+
+const baseMap = {} 
+
+let gameState = {}
+
+const playersPositions = {}
 
 const tileSize = 5
 
@@ -15,13 +21,12 @@ window.onload = function() {
   document.addEventListener("keydown", keyDownEvent);
   renderInitialState()
 
-  var x = 30;
-  setInterval(renderServerUpdates(), 1000 / x);
+  var x = 1;
+  setInterval(renderServerUpdates, 1000 / x);
 };
 
 // HANDLE PLAYER INPUT
 function keyDownEvent(e) {
-  console.log("AAAAA")
   switch (e.keyCode) {
     case 37:
       nextX = -1;
@@ -42,69 +47,97 @@ function keyDownEvent(e) {
   }
 }
 
-// RENDER GAME WORLD
+function updatePlayerPosition(newX, newY, player) {
+  const {x: oldX, y: oldY} = playersPositions[player.id]
 
- function drawBackground() {
-  ctx.fillStyle = "black";
-  ctx.fillRect(0, 0, canvas.width, canvas.heigth);
+  for (let i = - 3; i <= 3; i++ ) {
+    for (let j = - 3; j <=  3; j++){
+      const xToClean = oldX + i * tileSize
+      const yToClean = oldY + j * tileSize
+      const basePixel = baseMap[xToClean][yToClean]
+      if (basePixel) drawPixel(basePixel)
+    }
+  }
+
+  playersPositions[player.id] = {x: newX, y: newY}
 }
-
 
 function drawPlayer(x,y, player) {
+
+  if (playersPositions[player.id]) updatePlayerPosition(x,y,player)
+  else playersPositions[player.id] = {x, y}
+
+  ctx.beginPath()
   ctx.moveTo(x, y);
-  ctx.lineTo(x-15, y+15);
-  ctx.lineTo(x+15, y+15);
+  ctx.lineTo(x-3*tileSize, y+3*tileSize);
+  ctx.lineTo(x+3*tileSize, y+3*tileSize);
   ctx.closePath();
 
-
-  ctx.lineWidth = 1;
-  ctx.strokeStyle = player.color;
-  ctx.stroke();
-
-  ctx.fillStyle = player.color
-
-  ctx.font = "15px Arial";
-  ctx.fillText(player.name, x-15, y + 30);
-  
   ctx.fillStyle = player.color
   ctx.fill();
+
+
 }
 
-function drawWall(x, y) {
-  ctx.fillStyle = "black"
+function drawWall(x, y, wall) {
+  ctx.fillStyle = wall.color
   ctx.fillRect(x, y, tileSize, tileSize);
 }
 
-function drawLine(x, y) {
-  ctx.fillStyle = "blue"
+function drawLine(x, y, line) {
+  ctx.fillStyle = line.color
   ctx.fillRect(x, y, tileSize, tileSize);
 }
 
-function drawMap(mapMatrix) {
-  mapMatrix.forEach((rowArray, indexRow) => {
-    rowArray.forEach((columnValue, indexColumn) => {
-      const x = indexColumn * tileSize
-      const y = indexRow * tileSize
-      switch (columnValue.type) {
-        case "wall": drawWall(x, y); break;
-        case "line": drawLine(x, y); break;
-        case "player": drawPlayer(x, y, columnValue); break;
-        default: break;
-      }
+function drawBackground(x, y, bg) {
+  ctx.fillStyle = bg.color
+  ctx.fillRect(x, y, tileSize, tileSize);
+}
+
+function drawPixelSetup(value) {
+  const x = value.position.x
+  const y = value.position.y 
+
+  baseMap[x] = baseMap[x] || {}
+  baseMap[x][y] = value
+
+  gameState[x] = gameState[x] || {}
+  gameState[x][y] = value
+
+  switch (value.type) {
+    case "wall": drawWall(x, y, value); break;
+    case "line": drawLine(x, y, value); break;
+    case "player": drawPlayer(x, y, value); break;
+    case "background": drawBackground(x, y, value); break;
+    default: break;
+  }
+}
+
+function drawPixel(value) {
+  const x = value.position.x 
+  const y = value.position.y
+  switch (value.type) {
+    case "wall": drawWall(x, y, value); break;
+    case "line": drawLine(x, y, value); break;
+    case "player": drawPlayer(x, y, value); break;
+    case "background": drawBackground(x, y, value); break;
+    default: break;
+  }
+}
+
+function renderInitialState() {
+  const serverResponse = generateServerSetupResponse()
+  Object.keys(serverResponse).forEach(x => {
+    Object.keys(serverResponse[x]).forEach(y =>{
+      drawPixelSetup(serverResponse[x][y])
     })
   })
 }
 
-function renderInitialState(serverResponse) {
-  serverResponse = generateServerSetupResponse()
-  
-  drawBackground()
-  drawMap(serverResponse.map)
-}
+function renderServerUpdates() {
+  const serverResponse = generateServerUpdateResponse()
 
-function renderServerUpdates(serverResponse) {
-  serverResponse = generateServerSetupResponse()
-  
-  drawBackground()
-  drawMap(serverResponse.map)
+  serverResponse.forEach(updatePixel => {
+    drawPixel(updatePixel)
+  })
 }
