@@ -1,0 +1,33 @@
+<div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <div class="d-flex justify-content-center align-items-center">
+          <h1> CREATE GAME </h1>
+        </div>
+        <%= if @changeset.action do%>
+        <div class="alert alert-danger">
+          <p> Oops, something went wrong! Please check de errors below. </p>
+        </div>
+      <% end %>
+
+      <%= form_for @changeset, Routes.user_path(@conn, :create), fn f -> %>
+      <div class="control-group">
+        <div class="form-group floating-label-form-group controls">
+          <%= text_input f, :name, placeholder: "Player Name", class: "form-control" %>
+          <%= error_tag f, :name %>
+        </div>
+      </div>
+
+        <div class="control-group">
+          <div class="form-group floating-label-form-group controls">
+            <%= text_input f, :laps, placeholder: "Laps", class: "form-control" %>
+            <%= error_tag f, :laps %>
+          </div>
+        </div>
+
+       <br>
+       <div class="d-flex justify-content-center align-items-center">
+          <%= submit "Create", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+</div>

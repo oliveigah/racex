@@ -1,8 +1,9 @@
-const tileSize = 5
+const tileSize = 1
+const maxX = 1000 / tileSize
+const maxY = 800 / tileSize
 
 function generateMap() {
-  const maxX = 1000 / tileSize
-  const maxY = 800 / tileSize
+  
 
   const result = {}
   for(let i = 0; i <= maxX; i++) {
@@ -15,17 +16,17 @@ function generateMap() {
  }
  
  function generateValue(row, col) {
-   if(row <= 4 || row >= 155) return { type: "wall", position: {x: col * tileSize, y: row * tileSize}, color: "black" }
-   if(col <= 4 || col >= 195) return { type: "wall", position: {x: col * tileSize, y: row * tileSize}, color: "black"}
+   if(row <= maxY * 0.05 || row >= maxY * 0.95) return { type: "wall", position: {x: col * tileSize, y: row * tileSize}, color: "black" }
+   if(col <= maxX*0.05 || col >= maxX*0.95 ) return { type: "wall", position: {x: col * tileSize, y: row * tileSize}, color: "black"}
  
    if (
-     (row >= 70 && row <= 90) &&
-     (col >= 90 && col <= 110)
+     (row >= maxY * 0.40 && row <= maxY * 0.60) &&
+     (col >= maxX * 0.40 && col <= maxX * 0.60)
    ) return { type: "wall", position: {x: col * tileSize, y: row * tileSize}, color: "black"  }
 
    if (
-    (row >= 79 && row <= 81) &&
-    (col > 110 && col < 195)
+    (row >= maxY * 0.48 && row <= maxY * 0.50) &&
+    (col > maxX * 0.60 && col < maxX * 0.95)
    ) return { type: "line", position: {x: col * tileSize, y: row * tileSize}, color: "blue" }
 
 
@@ -39,12 +40,13 @@ function generateMap() {
 
  let test = 0
  function generateServerUpdateResponse() {
-   test ++
-   if (test > 100) return []
+  if (test > 999) return []
+  test++
   return [
-    { type: "player", id: 1, color: "green", position: {x: 120 * tileSize, y: (85-test) * tileSize}},
-    { type: "player", id: 2, color: "orange", position: {x: 130 * tileSize , y: (85-test) * tileSize}},    
-    { type: "player", id: 3, color: "red", position: {x: 140 *  tileSize, y: (85-test) * tileSize}},
+    { type: "player", id: 1, color: "green", position: {x: maxX * 0.65 * tileSize, y: (maxY * 0.51 - test * 5) * tileSize}, rotation: test * 10},
+    { type: "player", id: 2, color: "orange", position: {x: maxX * 0.70 * tileSize, y: (maxY * 0.51 - test * 7) * tileSize}, rotation: test * 10},    
+    { type: "player", id: 3, color: "red", position: {x: maxX * 0.75 * tileSize, y: (maxY * 0.51 - test * 10) * tileSize}, rotation: test * 10},
+    { type: "shoot", id: 1, color: "green", position: {x: maxX * 0.65 * tileSize, y: (maxY * 0.51 - test) * tileSize}, rotation: test * 10},
   ]
  }
 
