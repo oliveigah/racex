@@ -15,6 +15,6 @@ defmodule Racex.Game.Race do
     race
     |> cast(attrs, [:map, :laps])
     |> validate_required([:map, :laps])
-    |> validate_length(:laps, min: 3, max: 20)
+    |> validate_number(:laps, greater_than_or_equal_to: 3)
   end
 end

@@ -10,14 +10,30 @@
         </div>
       <% end %>
 
-      <%= form_for @changeset, Routes.user_path(@conn, :create), fn f -> %>
+      <%= form_for @changeset, Routes.game_path(@conn, :create), fn f -> %>
       <div class="control-group">
-        <div class="form-group floating-label-form-group controls">
-          <%= text_input f, :name, placeholder: "Player Name", class: "form-control" %>
-          <%= error_tag f, :name %>
-        </div>
-      </div>
+       <div class="row">
+        <%=  for map <- @maps do%>
+          <div class="col-md-4">
+            <div class="d-flex justify-content-center align-items-center">
+              <h4> <%= map.name %></h4>
+            </div>
+            <div class="card mb-4 box-shadow annotations-thumbnail">
+              <img class="card-img-top" src="<%= Routes.static_path(@conn, map.thumbnail) %>" data-holder-rendered="true">
+            </div>
+             <div class="card-body">
+                <div class="d-flex justify-content-center align-items-center">
+                  <div class="btn-group">
+                   <%= radio_button f, :map, map.name%>
+                  </div>
+                </div>
+            </div>
 
+          </div>
+        <% end %>
+        </div>
+
+      </div>
         <div class="control-group">
           <div class="form-group floating-label-form-group controls">
             <%= text_input f, :laps, placeholder: "Laps", class: "form-control" %>

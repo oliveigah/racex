@@ -11,4 +11,21 @@ defmodule Racex.Game do
     |> Race.get_race_creation_form(attrs)
     |> Repo.insert()
   end
+
+  def get_available_maps() do
+    [
+      %{
+        name: "square",
+        thumbnail: "/images/maps/square.png"
+      },
+      %{
+        name: "circle",
+        thumbnail: "/images/maps/circle.png"
+      },
+      %{
+        name: "eight",
+        thumbnail: "/images/maps/eight.png"
+      }
+    ]
+  end
 end

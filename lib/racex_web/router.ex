@@ -21,12 +21,19 @@ defmodule RacexWeb.Router do
 
     get "/users/new", UserController, :new
     get "/sessions/new", SessionController, :new
-    get "/games/new", GameController, :new
 
     post "/users", UserController, :create
     post "/sessions", SessionController, :create
 
     delete "/sessions", SessionController, :delete
+  end
+
+  scope "/games", RacexWeb do
+    pipe_through :browser
+
+    get "/index", GameController, :index
+    get "/new", GameController, :new
+    post "/create", GameController, :create
   end
 
   # Other scopes may use custom stacks.
